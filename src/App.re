@@ -1,4 +1,3 @@
-/* State declaration */
 type fieldState = 
   | Empty
   | Cross
