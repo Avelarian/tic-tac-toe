@@ -1,126 +1,76 @@
+open Belt;
+
 type fieldState = 
   | Empty
   | Cross
   | Circle;
 
-type field = {
-  id: int,
-  state: fieldState
-}
-
 type action =
-  | Mark(field)
-  | Nothing;
+  | Mark(int, int)
 
-let nextTurn = ref(Cross);
-
-let id = ref(0);
-
-let initialState = { id: 0, state: Empty };
-
-let fields = [|
-{
-  id: 1,
-  state: Empty
-},
-{
-  id: 2,
-  state: Empty
-},
-{
-  id: 3,
-  state: Empty
-},
-{
-  id: 4,
-  state: Empty
-},
-{
-  id: 5,
-  state: Empty
-},
-{
-  id: 6,
-  state: Empty
-},
-{
-  id: 7,
-  state: Empty
-},
-{
-  id: 8,
-  state: Empty
-},
-{
-  id: 9,
-  state: Empty
-},
-|];
-
-/* State transitions */
-let reducer = (state, action) => {
-  state->Belt.Array.map(s => {
-    switch (action) {
-      | Mark(field) => {
-        field.id == s.id ? { nextTurn := nextTurn^ == Cross ? Circle : Cross; { ...s, state: nextTurn^}; } : s;
-      }
-      | Nothing => s;
-  }});
-};
-
-// let updateField = (field) => {
-//   id := id^ + 1;
-//   { id: id^, state: nextTurn^ }
-// }; nextTurn^ == Cross ? Circle : Cross; Js.log(nextTurn); updateField(field);
+let fields = Array.make(3, Array.make(3, Empty));
 
 [@react.component]
 let make = () => {
-  let (state, dispatch) = React.useReducer(reducer, fields);
+  let nextTurn = ref(Cross);
+  let gameActive = ref(true);
 
-  let toMark = (field) => {
-    field.state == Empty ?
-     { Js.log(state); dispatch(Mark(field)); } :
-     { Js.log(state); dispatch(Nothing) };
-    
+  let reducer = (state, action) => {
+    switch (action) {
+    | Mark(row, column) =>
+      state->Array.mapWithIndex((rowField, fieldRow) =>
+        fieldRow->Array.mapWithIndex((columnField, fieldColumn) => 
+          switch (columnField) {
+          | fieldIndex =>  {
+            nextTurn := nextTurn^ === Cross ? Circle : Cross;
+            row === rowField && column === fieldIndex ? nextTurn^ : state->Array.get(row)->Array.get(column);
+          };
+          | _ => field
+          }
+        )
+      )
+    };
   };
 
-  // let winner = () => {
-  //   if (state[0] == Cross && state)
-  // }
+  let rowCross = (state) => {
+
+  }
+
+  let (state, dispatch) = React.useReducer(reducer, fields);
 
   <main>
-    {React.string("Simple tic-tac-toe with reducer")}
+    {gameActive^ ? "Tic-tac-toe!"->React.string : "Finished!"->React.string}
     <div>
-      <button onClick={_ => toMark(state[0])}>
-        {state[0].state == Empty ? ""->React.string : (state[0].state == Cross ? "X"->React.string : "O"->React.string)}
+      <button onClick={_ => dispatch(Mark(0, 0))}>
+        {state[0] == Empty ? ""->React.string : (state[0] == Cross ? "X"->React.string : "O"->React.string)}
       </button>
-      <button onClick={_ => toMark(state[1])}>
-        {state[1].state == Empty ? ""->React.string : (state[1].state == Cross ? "X"->React.string : "O"->React.string)}
+      <button onClick={_ => dispatch(Mark(0, 1))}>
+        {state[1] == Empty ? ""->React.string : (state[1] == Cross ? "X"->React.string : "O"->React.string)}
       </button>
-      <button onClick={_ => toMark(state[2])}>
-        {state[2].state == Empty ? ""->React.string : (state[2].state == Cross ? "X"->React.string : "O"->React.string)}
+      <button onClick={_ => dispatch(Mark(0, 2))}>
+        {state[2] == Empty ? ""->React.string : (state[2] == Cross ? "X"->React.string : "O"->React.string)}
       </button>
     </div>
     <div>
-      <button onClick={_ => toMark(state[3])}>
-        {state[3].state == Empty ? ""->React.string : (state[3].state == Cross ? "X"->React.string : "O"->React.string)}
+      <button onClick={_ => dispatch(Mark(1, 0))}>
+        {state[3] == Empty ? ""->React.string : (state[3] == Cross ? "X"->React.string : "O"->React.string)}
       </button>
-      <button onClick={_ => toMark(state[4])}>
-        {state[4].state == Empty ? ""->React.string : (state[4].state == Cross ? "X"->React.string : "O"->React.string)}
+      <button onClick={_ => dispatch(Mark(1, 1))}>
+        {state[4] == Empty ? ""->React.string : (state[4] == Cross ? "X"->React.string : "O"->React.string)}
       </button>
-      <button onClick={_ => toMark(state[5])}>
-        {state[5].state == Empty ? ""->React.string : (state[5].state == Cross ? "X"->React.string : "O"->React.string)}
+      <button onClick={_ => dispatch(Mark(1, 2))}>
+        {state[5] == Empty ? ""->React.string : (state[5] == Cross ? "X"->React.string : "O"->React.string)}
       </button>
     </div>
     <div>
-      <button onClick={_ => toMark(state[6])}>
-        {state[6].state == Empty ? ""->React.string : (state[6].state == Cross ? "X"->React.string : "O"->React.string)}
+      <button onClick={_ => dispatch(Mark(2, 0))}>
+        {state[6] == Empty ? ""->React.string : (state[6] == Cross ? "X"->React.string : "O"->React.string)}
       </button>
-      <button onClick={_ => toMark(state[7])}>
-        {state[7].state == Empty ? ""->React.string : (state[7].state == Cross ? "X"->React.string : "O"->React.string)}
+      <button onClick={_ => dispatch(Mark(2, 1))}>
+        {state[7] == Empty ? ""->React.string : (state[7] == Cross ? "X"->React.string : "O"->React.string)}
       </button>
-      <button onClick={_ => toMark(state[8])}>
-        {state[8].state == Empty ? ""->React.string : (state[8].state == Cross ? "X"->React.string : "O"->React.string)}
+      <button onClick={_ => dispatch(Mark(2. 2))}>
+        {state[8] == Empty ? ""->React.string : (state[8] == Cross ? "X"->React.string : "O"->React.string)}
       </button>
     </div>
   </main>;
