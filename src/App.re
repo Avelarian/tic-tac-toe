@@ -18,60 +18,71 @@ let make = () => {
   let reducer = (state, action) => {
     switch (action) {
     | Mark(row, column) =>
-      state->Array.mapWithIndex((rowField, fieldRow) =>
-        fieldRow->Array.mapWithIndex((columnField, fieldColumn) => 
-          switch (columnField) {
-          | fieldIndex =>  {
+      state->Array.mapWithIndex((rowIndex, rowField) =>
+        rowField->Array.mapWithIndex((columnIndex, columnField) => 
+          switch (columnIndex) {
+          | columnIndex =>  {
+            Js.log(state);
             nextTurn := nextTurn^ === Cross ? Circle : Cross;
-            row === rowField && column === fieldIndex ? nextTurn^ : state->Array.get(row)->Array.get(column);
+            row === rowIndex && column === columnIndex ? nextTurn^ : columnField
           };
-          | _ => field
+          | _ => columnField;
           }
         )
       )
     };
   };
 
-  let rowCross = (state) => {
-
+  let switchArray = (array, index) => {
+    switch(array->Array.get(index)) {
+      | Some(element) => element
+      | None => [|Empty, Empty, Empty|];
+    }
   }
 
   let (state, dispatch) = React.useReducer(reducer, fields);
 
+  React.useEffect1(() => {
+    let crossArray = Array.make(3, Cross);
+    let circleArray = Array.make(3, Circle);
+    let array = state->switchArray(0);
+    switch (array) {
+    | crossArray => {
+      gameActive := false;
+      Some(state); 
+    }
+    | 
+    };
+  }, state);
+
   <main>
     {gameActive^ ? "Tic-tac-toe!"->React.string : "Finished!"->React.string}
-    <div>
-      <button onClick={_ => dispatch(Mark(0, 0))}>
-        {state[0] == Empty ? ""->React.string : (state[0] == Cross ? "X"->React.string : "O"->React.string)}
-      </button>
-      <button onClick={_ => dispatch(Mark(0, 1))}>
-        {state[1] == Empty ? ""->React.string : (state[1] == Cross ? "X"->React.string : "O"->React.string)}
-      </button>
-      <button onClick={_ => dispatch(Mark(0, 2))}>
-        {state[2] == Empty ? ""->React.string : (state[2] == Cross ? "X"->React.string : "O"->React.string)}
-      </button>
+    <div> // state->Array.mapWithIndex((rowIndex, row) => element->switchArray(index)->Array.mapWithIndex(columnIndex, element) =>)
+      (
+        state->switchArray(0)->Array.mapWithIndex((index, element) => 
+          <button onClick={_ => dispatch(Mark(0, index))}>
+            {element == Empty ? ""->React.string : (element == Cross ? "X"->React.string : "O"->React.string)}
+          </button>
+        )
+      )->React.array
     </div>
     <div>
-      <button onClick={_ => dispatch(Mark(1, 0))}>
-        {state[3] == Empty ? ""->React.string : (state[3] == Cross ? "X"->React.string : "O"->React.string)}
-      </button>
-      <button onClick={_ => dispatch(Mark(1, 1))}>
-        {state[4] == Empty ? ""->React.string : (state[4] == Cross ? "X"->React.string : "O"->React.string)}
-      </button>
-      <button onClick={_ => dispatch(Mark(1, 2))}>
-        {state[5] == Empty ? ""->React.string : (state[5] == Cross ? "X"->React.string : "O"->React.string)}
-      </button>
+      (
+        state->switchArray(1)->Array.mapWithIndex((index, element) => 
+          <button onClick={_ => dispatch(Mark(1, index))}>
+            {element == Empty ? ""->React.string : (element == Cross ? "X"->React.string : "O"->React.string)}
+          </button>
+        )
+      )->React.array
     </div>
     <div>
-      <button onClick={_ => dispatch(Mark(2, 0))}>
-        {state[6] == Empty ? ""->React.string : (state[6] == Cross ? "X"->React.string : "O"->React.string)}
-      </button>
-      <button onClick={_ => dispatch(Mark(2, 1))}>
-        {state[7] == Empty ? ""->React.string : (state[7] == Cross ? "X"->React.string : "O"->React.string)}
-      </button>
-      <button onClick={_ => dispatch(Mark(2. 2))}>
-        {state[8] == Empty ? ""->React.string : (state[8] == Cross ? "X"->React.string : "O"->React.string)}
-      </button>
+      (
+        state->switchArray(2)->Array.mapWithIndex((index, element) => 
+          <button onClick={_ => dispatch(Mark(2, index))}>
+            {element == Empty ? ""->React.string : (element == Cross ? "X"->React.string : "O"->React.string)}
+          </button>
+        )
+      )->React.array
     </div>
   </main>;
 };
