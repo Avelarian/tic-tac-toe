@@ -42,18 +42,36 @@ let make = () => {
 
   let (state, dispatch) = React.useReducer(reducer, fields);
 
-  React.useEffect1(() => {
-    let crossArray = Array.make(3, Cross);
-    let circleArray = Array.make(3, Circle);
-    let array = state->switchArray(0);
-    switch (array) {
-    | crossArray => {
-      gameActive := false;
-      Some(state); 
-    }
-    | 
-    };
-  }, state);
+  // let finishGame = () => {
+  //   let crossArray = Array.make(3, Cross);
+  //   let circleArray = Array.make(3, Circle);
+  //   let columnCross = Array.make(3, Empty);
+  //   let columnCircle = Array.make(3, Empty);
+  //   let stateCross = Array.make(3, Array.make(3, Cross));
+  //   let stateCircle = Array.make(3, Array.make(3, Circle));
+  //   state->Array.mapWithIndex((row, rowContent) => {
+  //     switch rowContent {
+  //     | crossArray => gameActive := false;
+  //     | circleArray => gameActive := false;
+  //     | _ => rowContent->Array.mapWithIndex((column, columnContent) => {
+        
+  //     })
+  //     };
+  //   })
+  // }
+
+  // React.useEffect1(() => {
+  //   let crossArray = Array.make(3, Cross);
+  //   let circleArray = Array.make(3, Circle);
+  //   let array = state->switchArray(0);
+  //   switch (array) {
+  //   | crossArray => {
+  //     gameActive := false;
+  //     crossArray;
+  //   }
+  //   | 
+  //   };
+  // }, state);
 
   <main>
     {gameActive^ ? "Tic-tac-toe!"->React.string : "Finished!"->React.string}
