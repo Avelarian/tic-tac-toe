@@ -58,86 +58,65 @@ let reducer = (state, action) => {
       // Trying to improve this...
       ...state,
       gameActive:
-        state.fields->Array.get(0) == Some(Array.make(3, Cross))
-        || state.fields->Array.get(0) == Some(Array.make(3, Circle))
+        state.fields
+        ->Array.getBy(rowContent => {
+            rowContent == Array.make(3, Cross)
+            || rowContent == Array.make(3, Circle)
+          })
+        != None
           ? false
-          : state.fields->Array.get(1) == Some(Array.make(3, Cross))
-            || state.fields->Array.get(1) == Some(Array.make(3, Circle))
+          : state.fields->switchArray(0)->Array.get(0)
+            == state.fields->switchArray(1)->Array.get(0)
+            && state.fields->switchArray(0)->Array.get(0)
+            == state.fields->switchArray(2)->Array.get(0)
+            && (
+              state.fields->switchArray(0)->Array.get(0) == Some(Cross)
+              || state.fields->switchArray(0)->Array.get(0) == Some(Circle)
+            )
               ? false
-              : state.fields->Array.get(2) == Some(Array.make(3, Cross))
-                || state.fields->Array.get(2) == Some(Array.make(3, Circle))
+              : state.fields->switchArray(0)->Array.get(1)
+                == state.fields->switchArray(1)->Array.get(1)
+                && state.fields->switchArray(0)->Array.get(1)
+                == state.fields->switchArray(2)->Array.get(1)
+                && (
+                  state.fields->switchArray(0)->Array.get(1) == Some(Cross)
+                  || state.fields->switchArray(0)->Array.get(1)
+                  == Some(Circle)
+                )
                   ? false
-                  : state.fields->switchArray(0)->Array.get(0)
-                    == state.fields->switchArray(1)->Array.get(0)
-                    && state.fields->switchArray(0)->Array.get(0)
-                    == state.fields->switchArray(2)->Array.get(0)
+                  : state.fields->switchArray(0)->Array.get(2)
+                    == state.fields->switchArray(1)->Array.get(2)
+                    && state.fields->switchArray(0)->Array.get(2)
+                    == state.fields->switchArray(2)->Array.get(2)
                     && (
-                      state.fields->switchArray(0)->Array.get(0)
+                      state.fields->switchArray(0)->Array.get(2)
                       == Some(Cross)
-                      || state.fields->switchArray(0)->Array.get(0)
+                      || state.fields->switchArray(0)->Array.get(2)
                       == Some(Circle)
                     )
                       ? false
-                      : state.fields->switchArray(0)->Array.get(1)
+                      : state.fields->switchArray(0)->Array.get(0)
                         == state.fields->switchArray(1)->Array.get(1)
-                        && state.fields->switchArray(0)->Array.get(1)
-                        == state.fields->switchArray(2)->Array.get(1)
+                        && state.fields->switchArray(0)->Array.get(0)
+                        == state.fields->switchArray(2)->Array.get(2)
                         && (
-                          state.fields->switchArray(0)->Array.get(1)
+                          state.fields->switchArray(0)->Array.get(0)
                           == Some(Cross)
-                          || state.fields->switchArray(0)->Array.get(1)
+                          || state.fields->switchArray(0)->Array.get(0)
                           == Some(Circle)
                         )
                           ? false
                           : state.fields->switchArray(0)->Array.get(2)
-                            == state.fields->switchArray(1)->Array.get(2)
-                            && state.fields->switchArray(0)->Array.get(2)
-                            == state.fields->switchArray(2)->Array.get(2)
+                            == state.fields->switchArray(1)->Array.get(1)
+                            && state.fields->switchArray(2)->Array.get(0)
+                            == state.fields->switchArray(1)->Array.get(1)
                             && (
                               state.fields->switchArray(0)->Array.get(2)
                               == Some(Cross)
                               || state.fields->switchArray(0)->Array.get(2)
                               == Some(Circle)
                             )
-                              ? false
-                              : state.fields->switchArray(0)->Array.get(0)
-                                == state.fields->switchArray(1)->Array.get(1)
-                                && state.fields
-                                   ->switchArray(0)
-                                   ->Array.get(0)
-                                == state.fields->switchArray(2)->Array.get(2)
-                                && (
-                                  state.fields->switchArray(0)->Array.get(0)
-                                  == Some(Cross)
-                                  || state.fields
-                                     ->switchArray(0)
-                                     ->Array.get(0)
-                                  == Some(Circle)
-                                )
-                                  ? false
-                                  : state.fields
-                                    ->switchArray(0)
-                                    ->Array.get(2)
-                                    == state.fields
-                                       ->switchArray(1)
-                                       ->Array.get(1)
-                                    && state.fields
-                                       ->switchArray(2)
-                                       ->Array.get(0)
-                                    == state.fields
-                                       ->switchArray(1)
-                                       ->Array.get(1)
-                                    && (
-                                      state.fields
-                                      ->switchArray(0)
-                                      ->Array.get(2)
-                                      == Some(Cross)
-                                      || state.fields
-                                         ->switchArray(0)
-                                         ->Array.get(2)
-                                      == Some(Circle)
-                                    )
-                                      ? false : true,
+                              ? false : true,
     }
   };
 };
