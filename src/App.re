@@ -16,8 +16,7 @@ let make = () => {
   // Trying to improve the structure of the component also...
 
   <main>
-    {state.gameActive
-       ? "Tic-tac-toe!"->React.string : "Finished!"->React.string}
+    (state.gameActive ? "Tic-tac-toe!" : "Finished!")->React.string
     <div>
       {state.fields
        ->switchArray(0)
@@ -55,7 +54,4 @@ let make = () => {
        ->React.array}
     </div>
   </main>;
-  // Trying to improve this structure...
-  // Trying to improve this structure
-  // trying to improve this structure...
 };
