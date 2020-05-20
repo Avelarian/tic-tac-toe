@@ -1,34 +1,36 @@
-open Belt;
-
-open TicTacToe;
-
 [@react.component]
 let make = () => {
-  let (state, dispatch) = React.useReducer(reducer, game);
+  let (state, dispatch) =
+    React.useReducer(TicTacToe.reducer, TicTacToe.initialState);
 
   React.useEffect1(
     () => {
-      dispatch(FinishGame);
+      dispatch(Finish);
       None;
     },
     state.fields,
   );
-  // Trying to improve the structure of the component also...
 
   <main>
-    (state.gameActive ? "Tic-tac-toe!" : "Finished!")->React.string
+    (
+      switch (state.status) {
+      | Active => "Tic Tac Toe"
+      | Finished => "Finished"
+      }
+    )
+    ->React.string
     {state.fields
      ->Array.mapWithIndex((rowIndex, rowContent) => {
          <div>
            {rowContent
             ->Array.mapWithIndex((columnIndex, columnContent) =>
-                <button
-                  onClick={_ =>
-                    dispatch(Mark(rowIndex, columnIndex, columnContent))
-                  }>
+                <button onClick={_ => dispatch(Mark(rowIndex, columnIndex))}>
                   (
-                    columnContent == Empty
-                      ? "" : columnContent == Cross ? "X" : "O"
+                    switch (columnContent) {
+                    | Some(Cross) => "X"
+                    | Some(Circle) => "O"
+                    | None => ""
+                    }
                   )
                   ->React.string
                 </button>
